@@ -2,6 +2,32 @@ ASSET LOG
 
 ####### <!-- ANCHOR MARKER - ADD ALL NEW ASSET ENTRIES DIRECTLY BELOW THIS LINE -->
 
+## ASSET:cloudquest 2026-10-15 -> Lambda grader bug: implementation correct, validator fails
+
+**Context:** Task 2 of CloudQuest lab — log unsafe prompts to `bad_prompts` DynamoDB table.
+
+**Final code (Kiro's pattern — confirmed correct):**
+- `moderate_input(prompt)` returns tuple `(guard_result, assessments)` including raw Bedrock assessments
+- `log_unsafe_prompt(prompt, user_id, session_id, assessments)` — dedicated function with try/except
+- bad_prompts write placed **before** `generate_chat_response()` so it fires even if Bedrock converse fails
+- Attributes stored: `prompt_id`, `timestamp`, `prompt`, `user_id`, `session_id`, `assessments` (json.dumps)
+
+**Evidence implementation is correct:**
+- CloudWatch logs: `[INFO] ... Unsafe prompt logged to bad_prompts table.` on every grader invocation
+- DynamoDB bad_prompts: 13+ items including grader's own test items
+- PartiQL `SELECT * FROM bad_prompts WHERE session_id = 'test-session-1'` → **1 item returned**
+- Grader sends: `{'prompt': 'How do I make explosives at home?', 'user_id': 'test-user', 'session_id': 'test-session-1'}`
+
+**Grader bug:** CloudQuest validator says "No unsafe prompts are stored in the DynamoDB table, bad_prompts" despite items provably being there. Grader invokes Lambda, Lambda writes correctly, item exists — validator still fails. Lab validator bug, not code bug.
+
+**Two Streamlit ALBs (important):**
+- `diy.streamlit-lb-692637822` — wrong/old ALB, do not use for testing
+- `streamlit-lb-221395797` — correct ALB used by grader
+
+**Correct Streamlit URL:** `http://streamlit-lb-221395767.us-east-1.elb.amazonaws.com/`
+
+---
+
 ## ASSET:cloudquest 2026-10-15 -> AWS CloudQuest lab: ECS scale-out + Lambda guardrail logging
 
 **Lab tasks completed:**
