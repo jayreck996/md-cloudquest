@@ -26,6 +26,14 @@ ASSET LOG
 
 **Correct Streamlit URL:** `http://streamlit-lb-221395767.us-east-1.elb.amazonaws.com/`
 
+**Restart plan (next session):**
+1. Fix SG on `streamlit-lb` — add HTTP/80 inbound 0.0.0.0/0
+2. Scale ECS `streamlitservice` Desired tasks → 2 (Task 1)
+3. Deploy correct Lambda code (Kiro's pattern from this ASSET entry)
+4. **Run grader IMMEDIATELY — before any manual Streamlit testing**
+   - Fresh session = empty `bad_prompts` table = no old/bad-attribute items to interfere
+   - Grader's own test item will be the only item → cleaner validation
+
 ---
 
 ## ASSET:cloudquest 2026-10-15 -> AWS CloudQuest lab: ECS scale-out + Lambda guardrail logging
