@@ -2,6 +2,137 @@ ASSET LOG
 
 ####### <!-- ANCHOR MARKER - ADD ALL NEW ASSET ENTRIES DIRECTLY BELOW THIS LINE -->
 
+## ASSET:cloudquest 2026-10-28 -> Security groups: stateful behaviour explained
+
+**Rule:** Security groups are **stateful** — they track active network sessions.
+
+**What this means:**
+- If your instance sends an outbound request, the security group remembers the session
+- The inbound *response* to that request is automatically allowed — no inbound rule required
+- Only new inbound connections from outside need an explicit allow rule
+
+**Contrast with NACLs (stateless):** NACLs treat every packet independently — you must explicitly allow both directions.
+
+| Traffic | Stateful SG behaviour |
+|---|---|
+| Outbound request you initiated | Allowed (outbound rule) |
+| Inbound response to your request | Auto-allowed (state tracking) |
+| New inbound connection from outside | Blocked unless explicit inbound rule |
+
+---
+
+## ASSET:cloudquest 2026-10-28 -> IAM policy JSON: ec2_app_policy with S3/EC2/DynamoDB permissions
+
+**Policy:** `ec2_app_policy` — required permissions for Compliance_App_Role validator.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeInstances",
+                "s3:ListBucket",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "dynamodb:PartiQLSelect"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+**DIY task steps:**
+1. Add `s3:DeleteObject` to `ec2_app_policy` (edit existing policy)
+2. Create IAM role `Compliance_App_Role` → attach `ec2_app_policy` + permissions boundary `secPolBoundaries`
+3. Attach role to `Compliance-Server` EC2 instance via Actions → Security → Modify IAM role
+
+---
+
+## ASSET:cloudquest 2026-10-27 -> AWS Config remediation: ec2-instance-detailed-monitoring-enabled
+
+**Lab tasks:**
+1. Create SSM Automation document (`MyAutomationDoc`) using provided YAML
+2. Deploy Config rule `ec2-instance-detailed-monitoring-enabled`
+3. Edit remediation action → set to `MyAutomationDoc` (not the pre-existing `Lab-TagProdInstances`)
+4. Select HR-WebServer in noncompliant resources → Remediate
+
+**Key issue:** When deploying the Config rule, it defaulted to `Lab-TagProdInstances` as the remediation action. That document only adds tags — it does NOT enable detailed monitoring. Must manually edit the remediation action to use the new `MyAutomationDoc`.
+
+**SSM document YAML (use as-is — do not replace the Lambda ARN account ID):**
+```yaml
+schemaVersion: '0.3'
+parameters:
+  InstanceId:
+    type: String
+    description: ID of the instance to enable detailed monitoring
+mainSteps:
+  - name: enableDetailedMonitoring
+    action: aws:invokeLambdaFunction
+    isEnd: true
+    inputs:
+      InvocationType: Event
+      Payload: |
+        {"instanceId": "{{ InstanceId }}"}
+      FunctionName: arn:aws:lambda:us-east-1:582969442417:function:labFunction-DIY
+```
+
+**Hint reminder:** Also check `required-tags` rule — HR-WebServer may need remediation there too.
+
+---
+
+## ASSET:cloudquest 2026-10-27 -> Multi-Region KMS key: creation + automatic rotation
+
+**Task:** Create symmetric multi-Region KMS key with automatic rotation enabled.
+
+**Console path:** KMS → Customer managed keys → Create key
+
+| Field | Value |
+|---|---|
+| Key type | Symmetric |
+| Key usage | Encrypt and decrypt |
+| Regionality | **Multi-Region key** |
+
+**Enable rotation:** Key detail page → Key rotation tab → Enable automatic key rotation → Save
+
+**Key ID format:** Multi-Region keys have prefix `mrk-` (e.g. `mrk-6d8ac2fe63964df69e566b7853d3b3c2`)
+
+**Note:** Cannot convert an existing single-Region key to multi-Region — must create new.
+
+**Validator tip:** Submit the full ARN if the key ID alone is rejected:
+`arn:aws:kms:us-east-1:<account-id>:key/mrk-<uuid>`
+
+---
+
+## ASSET:cloudquest 2026-10-27 -> KMS envelope encryption: openssl bad decrypt fix
+
+**Task:** Encrypt a file using a KMS-generated data key, then decrypt it.
+
+**Root cause of "bad decrypt" error:** Two issues:
+1. **Typo** — encryption used `-k fileb://datakeyPlainText.tx` (missing `t`), decryption used `.txt` → different passphrase strings
+2. **Misuse of `-k` flag** — OpenSSL's `-k` takes a literal passphrase string, NOT a file path. `fileb://` is AWS CLI syntax; OpenSSL ignores it as a path and uses the whole string as the passphrase
+
+**Quick fix (recover existing encrypted file):**
+```bash
+openssl enc -d -aes256 -in encryptedSecret.txt -out decryptedSecret.txt -k "fileb://datakeyPlainText.tx"
+# Must match exact string used during encryption (including the typo)
+```
+
+**Correct approach for future:**
+```bash
+# Encrypt
+openssl enc -e -aes256 -pbkdf2 -in samplesecret.txt -out encryptedSecret.txt -pass file:datakeyPlainText.txt
+# Decrypt
+openssl enc -d -aes256 -pbkdf2 -in encryptedSecret.txt -out decryptedSecret.txt -pass file:datakeyPlainText.txt
+```
+
+**Key difference:** `-pass file:filename` (OpenSSL syntax) reads the file; `-k fileb://filename` uses the string literally.
+
 ## ASSET:cloudquest 2026-10-23 -> EC2 key pairs: SSH public key placement at instance launch
 
 **Concept:** When launching an EC2 instance, you can specify a key pair. On first boot, AWS places the public key into `~/.ssh/authorized_keys` on the Linux instance.
