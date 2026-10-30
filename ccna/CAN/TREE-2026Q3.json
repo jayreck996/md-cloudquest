@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "type": "TREE",
+    "subject": "ccnav7",
+    "quarter": "2026Q3",
+    "created": "2026-10-30"
+  },
+  "goal": "Complete CCNAv7 three-course curriculum through Cisco Networking Academy",
+  "courses": [
+    {
+      "id": "CCNA1",
+      "name": "Introduction to Networks",
+      "code": "ITN",
+      "status": "COMPLETED",
+      "completed": "2023-06-27",
+      "institution": "Auckland University of Technology",
+      "topics": [
+        "OSI model and TCP/IP model",
+        "Ethernet and LAN fundamentals",
+        "IPv4 addressing and subnetting",
+        "IPv6 addressing basics",
+        "Basic routing concepts",
+        "Network media and cabling",
+        "Transport layer (TCP/UDP)",
+        "Application layer protocols (DNS, DHCP, HTTP)"
+      ]
+    },
+    {
+      "id": "CCNA2",
+      "name": "Switching, Routing, and Wireless Essentials",
+      "code": "SRWE",
+      "status": "TODO",
+      "topics": [
+        "VLANs and trunking (802.1Q)",
+        "Inter-VLAN routing",
+        "Spanning Tree Protocol (STP/RSTP)",
+        "EtherChannel (LACP/PAgP)",
+        "DHCPv4 and DHCPv6",
+        "HSRP (First Hop Redundancy)",
+        "Static routing",
+        "Wireless LAN concepts (802.11)",
+        "WLAN security (WPA2/WPA3)"
+      ]
+    },
+    {
+      "id": "CCNA3",
+      "name": "Enterprise Networking, Security, and Automation",
+      "code": "ENSA",
+      "status": "TODO",
+      "topics": [
+        "OSPFv2 single-area and multi-area",
+        "Network security concepts",
+        "ACLs (standard and extended)",
+        "NAT (static, dynamic, PAT)",
+        "QoS concepts",
+        "Network management (SNMP, Syslog, NTP)",
+        "VPN and IPsec concepts",
+        "SD-WAN and SD-Access concepts",
+        "Network automation basics",
+        "REST APIs and JSON",
+        "Configuration management tools (Ansible, Puppet, Chef)"
+      ]
+    }
+  ],
+  "resources": {
+    "primary": "Jeremy's IT Lab — YouTube (free, maps to all three courses)",
+    "labs": "Cisco Packet Tracer (free via netacad.com personal account)",
+    "notes": "github.com/psaumur/CCNA_Course_Notes",
+    "text": "HowToNetwork free 560-page study guide"
+  },
+  "phases": {
+    "REVIEW": "Revisit CCNA1 topics already completed at AUT (2023)",
+    "STUDY": "Work through CCNA2 and CCNA3 via Jeremy's IT Lab",
+    "PRACTICE": "Packet Tracer labs per course module",
+    "ASSESS": "End-of-course assessments and gap review"
+  },
+  "blockers": []
+}
