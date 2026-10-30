@@ -2,6 +2,24 @@ ASSET LOG
 
 ####### <!-- ANCHOR MARKER - ADD ALL NEW ASSET ENTRIES DIRECTLY BELOW THIS LINE -->
 
+## ASSET:ccna 2026-10-30 → Coursera Packt CCNA specialization: financial aid and course structure
+
+**Specialization:** Cisco CCNA 200-301: The Complete Guide to Getting Certified (Packt, Coursera)
+
+**Courses:**
+- Course 1: CCNA Foundations – Networking Basics and Cisco IOS Essentials (9 hrs) — covers CCNAv7 CCNA1 content
+- Course 2: CCNA Intermediate – Switching, VLANs & Routing (11 hrs) — covers CCNAv7 CCNA2 content
+- Course 3: CCNA Advanced – WAN, Security, and Network Services (24 hrs) — covers CCNAv7 CCNA3 content
+- Course 4: CCNA Expert – Network Automation, Cloud, and Emerging Technologies (14 hrs)
+
+**Certificate:** each course issues its own certificate; full Specialization Certificate requires all 4 completed.
+
+**Financial aid:** available per course (apply separately for each). Up to 75% off. Review takes up to 16 days. Apply via course page → "Financial aid available, learn more."
+
+**Correction:** CCNAv7 CCNA2 and CCNA3 on netacad.com are instructor-led only — not free self-paced. Earlier claim was incorrect.
+
+---
+
 ## ASSET:ccna 2026-10-30 → CCNAv7 study plan: goal, structure, and prior completion
 
 **Goal:** Complete the CCNAv7 three-course curriculum through Cisco Networking Academy.
