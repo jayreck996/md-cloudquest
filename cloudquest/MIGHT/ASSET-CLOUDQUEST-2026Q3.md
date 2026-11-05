@@ -2,6 +2,136 @@ ASSET LOG
 
 ####### <!-- ANCHOR MARKER - ADD ALL NEW ASSET ENTRIES DIRECTLY BELOW THIS LINE -->
 
+## ASSET:cloudquest 2026-11-05 -> BADGE EARNED: AWS Cloud Quest: Security - Trained
+
+**Badge:** AWS Cloud Quest: Security - Training Badge
+**Issued by:** Amazon Web Services Training and Certification
+**Date issued:** November 5, 2026
+**Credly URL:** https://www.credly.com/earner/earned/badge/94957dfe-68d7-46d8-9503-e5eba8e0a9db
+**Skills:** AWS, AWS Cloud, Amazon Web Services (AWS), Cloud Security, Data Security, IAM, Security Architecture, Security Management, Serverless Security
+
+---
+
+## ASSET:cloudquest 2026-11-05 -> Cognito Pre-SignUp Lambda trigger DIY
+
+**Task:** Add a Pre-SignUp Lambda trigger to the Cognito user pool to auto-confirm users (remove validation code process).
+
+| Field | Value |
+|---|---|
+| User pool | `bookmark-app-userpool` |
+| User pool ID | `us-east-1_3KUAT2O6K` |
+| Trigger type | Pre sign-up Lambda trigger |
+| Lambda function | `preSignHandlerLambdaFunction` |
+
+**Result:** Trigger added successfully.
+
+---
+
+## ASSET:cloudquest 2026-11-05 -> AWS Glue crawler DIY: crawl Athena-output folder → new Data Catalog table
+
+**Task:** Create a new Glue crawler pointing at the Athena query results folder and run it to produce a new Data Catalog table.
+
+**Crawler config (matched practice crawler `logcrawler`):**
+| Field | Value |
+|---|---|
+| Crawler name | `athena-output-crawler` |
+| Data source | `s3://log-bucket-d864d830/Athena-output/` |
+| IAM role | `glue-service-role-d864d830` |
+| Target database | `logsdatabase` |
+| Schedule | On demand |
+
+**Dependency chain discovered:**
+1. `logcrawler` had never been run → ran it (1 min 16s, 1 table created: `log_bucket_d864d830` in `logsdatabase`)
+2. Ran Athena query `SELECT * FROM "logsdatabase"."log_bucket_d864d830" LIMIT 10` → populated `s3://log-bucket-d864d830/Athena-output/` with a CSV (query ID: `6882b5b9-a91e-4d9c-8b16-d5e189bee420`)
+3. Re-ran `athena-output-crawler` → 2 tables created
+
+**New Data Catalog tables (created by athena-output-crawler, 2nd run):**
+| Table name | Classification | Database |
+|---|---|---|
+| `6882b5b9_a91e_4d9c_8b16_d5e189bee420_csv` | CSV | `logsdatabase` |
+| `6882b5b9_a91e_4d9c_8b16_d5e189bee420` | UNKNOWN | `logsdatabase` |
+
+**Primary answer to DIY (corrected — table name must contain 'athena'):**
+- New table name: `athena_6882b5b9_a91e_4d9c_8b16_d5e189bee420_csv`
+- Database: `logsdatabase`
+- Fix: edited `athena-output-crawler` to add Table name prefix `athena_`, then re-ran (3rd run, 40s, 2 table changes)
+
+**Key detail:** The existing `logcrawler` (practice section) uses `s3://log-bucket-d864d830` (bucket root). The DIY crawler targets the `/Athena-output/` subfolder specifically. Use the same IAM role and database to avoid permission issues.
+
+---
+
+## ASSET:cloudquest 2026-11-05 -> CloudWatch + Lambda + SNS DIY: email subscription to UnauthorizedExceptionNotification
+
+**Task:** Add a confirmed email subscription to the SNS topic used in the practice section, so the topic has both a Lambda and an email subscriber.
+
+**SNS topic:** `UnauthorizedExceptionNotification`
+**Topic ARN:** `arn:aws:sns:us-east-1:741448922577:UnauthorizedExceptionNotification`
+
+**Steps:**
+1. SNS → Topics → UnauthorizedExceptionNotification → Create subscription
+2. Protocol: Email / Endpoint: `jayreck996@gmail.com`
+3. Click Create subscription (status: Pending confirmation)
+4. Open confirmation email → click "Confirm subscription" link (check spam)
+
+**Result:** Both subscriptions confirmed on the topic:
+- Lambda: `arn:aws:lambda:us-east-1:741448922577:...` (pre-existing from practice)
+- Email: `jayreck996@gmail.com` — subscription ID `46550afd-234c-4613-99ce-6a23904b647a`
+
+**Grader check:** validates that the same SNS topic has a confirmed email subscription AND a valid Lambda function subscription.
+
+---
+
+## ASSET:cloudquest 2026-11-04 -> Service Catalog DIY: deploy three-tier AppStack as catalogUser
+
+**Task:** Deploy the AppStack product as IAM user `catalogUser`, using the Base-Networking stack as the network layer.
+
+**Key parameter:** When launching AppStack, the `NetworkStackName` parameter must be set to the CloudFormation stack name created by the Base-Networking provisioned product — not the provisioned product name itself. Format: `SC-<account-id>-pp-<id>`.
+
+**Lab values:**
+- Account ID: `741448922577`
+- NetworkStackName: `SC-741448922577-pp-swvbx3cfdsy7y`
+- AppStack provisioned product ID: `pp-ippgq4wvtliu2`
+- AppStack product ID: `prod-gg4juvu6esgee` (Owner: Dev team)
+- Base-Networking product ID: `prod-srfhfrgenq3w6` (Owner: InfoSec Department)
+
+**Result:** Both `NetworkTemplate` (Base-Networking v1) and `AppStack` (App-v1.0) provisioned products reached **Available** status.
+
+**Portfolio name visibility:** The portfolio name is NOT visible from the `catalogUser` end-user view — it only appears in the admin console under Administration → Portfolios. The launch constraint on AppStack is named `3TierApp`. To find the portfolio name via CLI: `aws servicecatalog list-portfolios-for-product --product-id prod-gg4juvu6esgee`.
+
+---
+
+## ASSET:cloudquest 2026-11-04 -> API Gateway DIY: Cognito authorizer + labFunction-diy on /lab GET
+
+**Task:** Configure the existing `/lab` GET method in API Gateway to use `labFunction-diy` as the Lambda integration and `labAuthorizer` (Cognito) as the authorizer, then deploy to the `prod` stage.
+
+**Mistake to avoid:** Do NOT create a new `/diy` resource. The grader tests the existing `/lab` path. The fix is to edit the integration request on the existing `/lab` GET method and change the Lambda function from `labFunction-practice` to `labFunction-diy`.
+
+**Steps:**
+1. API Gateway → REST API → Resources → `/lab` → GET → Integration Request → Edit
+2. Change Lambda function to `labFunction-diy`
+3. Method Request → Authorization → set to `labAuthorizer` (Cognito user pool authorizer)
+4. Deploy API → Stage: `prod`
+
+**Cognito authorizer:** `labAuthorizer` — pool ID `048dwu - 3rdbQnY1x` (token source: Authorization header)
+
+**Invoke URL:** `https://6qdypmh6kf.execute-api.us-east-1.amazonaws.com/prod`
+
+**Grader endpoint tested:** `https://6qdypmh6kf.execute-api.us-east-1.amazonaws.com/prod/lab`
+
+---
+
+## ASSET:cloudquest 2026-11-02 -> AWS Skill Builder subscription details
+
+**Plan:** AWS Skill Builder Individual Annual Subscription (free, does not renew)
+
+**Period:** Sep 15, 2026 – Sep 14, 2027
+
+**Status:** Active
+
+**Price:** Free (complimentary annual subscription — not the standard $449/year paid tier)
+
+**Note:** This subscription grants full access to Cloud Quest and all individual subscriber content. It will not auto-renew at expiry.
+
 ## ASSET:cloudquest 2026-10-28 -> Security groups: stateful behaviour explained
 
 **Rule:** Security groups are **stateful** — they track active network sessions.
