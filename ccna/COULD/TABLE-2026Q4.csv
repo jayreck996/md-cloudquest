@@ -1,0 +1,271 @@
+"Example","L7 Application","L6 Presentation","L5 Session","L4 Transport","L3 Network","L2 Data Link","L1 Physical"
+"HTTPS GET (TCP 443)","GET /home HTTP/1.1
+Host: myapp.com
+Cookie: session-id=abc123","TLS Record {
+  Version: TLS 1.3
+  Payload: [x9f3a...c72b]
+}","Sticky Session {
+  Cookie: elb-sticky=abc
+  Tracked: true
+}","TCP Segment {
+  Src: 54321
+  Dst: 443
+  Seq: 1001
+  Flags: ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.25
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"DNS Query (UDP 53)","DNS Query {
+  Type: A Record
+  Domain: myapp.com
+  ID: 0x1a2b
+}","No Encryption {
+  Encoding: None
+  Passes: unchanged
+}","Stateless {
+  Session: None
+  Independent: true
+}","UDP Datagram {
+  Src: 54123
+  Dst: 53
+  Length: 29
+  Checksum: 0x4f2a
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 8.8.8.8
+  Proto: UDP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"SSH Session (TCP 22)","SSH Channel {
+  Cmd: show ip
+  interface brief
+}","SSH Record {
+  Length: 48
+  Payload: [a3f9...7c2d]
+  MAC: [auth code]
+}","Persistent Session {
+  Auth: Key exchange
+  State: Established
+}","TCP Segment {
+  Src: 51234
+  Dst: 22
+  Seq: 3042
+  Flags: PSH ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.25
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"FTP Transfer (TCP 21)","FTP Command {
+  Cmd: RETR report.pdf
+  User: ftpuser
+  Mode: Binary
+}","No Encryption {
+  Encoding: ASCII/Binary
+  Passes: unchanged
+}","FTP Session {
+  Control: Port 21
+  Data: Port 20
+  State: Active
+}","TCP Segment {
+  Src: 50123
+  Dst: 21
+  Seq: 2001
+  Flags: ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.30
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:03
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"SMTP Email (TCP 25)","SMTP {
+  From: jay@example.com
+  To: bob@example.com
+  Subject: Hello
+  Body: Hi there!
+}","No Encryption {
+  Encoding: ASCII
+  Passes: unchanged
+}","SMTP Session {
+  State: DATA
+  Dialog: Active
+}","TCP Segment {
+  Src: 55123
+  Dst: 25
+  Seq: 4001
+  Flags: PSH ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.40
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:04
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"HTTP POST API (TCP 80)","POST /api/users HTTP/1.1
+Host: api.myapp.com
+Content-Type: application/json
+Body: {name: Jay, role: admin}","No Encryption {
+  Version: HTTP/1.1
+  Passes: unchanged
+}","Session {
+  Cookie: session=xyz
+  State: Active
+}","TCP Segment {
+  Src: 56789
+  Dst: 80
+  Seq: 5001
+  Flags: PSH ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.25
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"SNMP Poll (UDP 161)","SNMP Get-Request {
+  OID: 1.3.6.1.2.1.1.1
+  Community: public
+  Version: v2c
+}","No Encryption {
+  Encoding: BER/ASN.1
+  Passes: unchanged
+}","Stateless {
+  Session: None
+  Independent: true
+}","UDP Datagram {
+  Src: 54999
+  Dst: 161
+  Length: 45
+  Checksum: 0x8a3f
+}","IP Packet {
+  Src: 10.0.0.1
+  Dst: 10.0.1.1
+  Proto: UDP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:05
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"TFTP Transfer (UDP 69)","TFTP Request {
+  Opcode: RRQ
+  Filename: config.txt
+  Mode: octet
+}","No Encryption {
+  Encoding: None
+  Passes: unchanged
+}","Stateless {
+  Session: None
+  Block: 1
+}","UDP Datagram {
+  Src: 55555
+  Dst: 69
+  Length: 20
+  Checksum: 0x2b4c
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 10.0.1.50
+  Proto: UDP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:06
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"VoIP Call (UDP 5060)","SIP INVITE {
+  From: sip:jay@pbx.com
+  To: sip:bob@pbx.com
+  Call-ID: abc123
+  RTP Port: 10000
+}","No Encryption {
+  Codec: G.711
+  Compression: active
+}","Call Session {
+  State: INVITE
+  Dialog: Establishing
+}","UDP Datagram {
+  Src: 5060
+  Dst: 5060
+  Length: 480
+  Checksum: 0x9f1a
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 203.0.113.10
+  Proto: UDP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:07
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"HTTPS Video Stream (TCP 443)","HTTP/2 Data {
+  Stream-ID: 3
+  Content-Type: video/mp4
+  Chunk: [segment_001.ts]
+}","TLS Record {
+  Version: TLS 1.3
+  Payload: [encrypted video chunk]
+}","HTTP/2 Session {
+  Streams: multiplexed
+  State: Streaming
+}","TCP Segment {
+  Src: 58000
+  Dst: 443
+  Seq: 90001
+  Flags: ACK
+}","IP Packet {
+  Src: 203.0.113.5
+  Dst: 54.230.0.1
+  Proto: TCP
+  TTL: 64
+}","Ethernet Frame {
+  Src: aa:bb:cc:dd:ee:01
+  Dst: aa:bb:cc:dd:ee:08
+  EtherType: IPv4
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
