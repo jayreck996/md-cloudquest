@@ -1,0 +1,72 @@
+"Example","Client Application","L7 Application","L6 Presentation","L5 Session","L4 Transport","L3 Network","L2 Data Link","L1 Physical"
+"CloudFront Signed URL (TCP 443)","Browser or mobile app
+requesting a protected
+asset via a time-limited
+signed URL","GET /premium/video.mp4
+?X-Amz-Signature=abc123...
+&X-Amz-Credential=KEYID/20261118
+&X-Amz-Expires=86400
+Host: d1234.cloudfront.net","TLS Record {
+  Version: TLS 1.3
+  Encrypted Payload: [signed URL request]
+}","CloudFront Session {
+  Edge: us-east-1
+  State: Active
+  Auth: embedded in URL
+}","TCP Segment {
+  Source Port: 63000
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 13.32.0.1
+  Protocol: TCP
+  TTL: 64
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"CloudFront Signed Cookie (TCP 443)","Browser streaming
+a premium series
+after login — cookies
+cover entire /premium/*","GET /premium/episode2.mp4
+HTTP/1.1
+Host: d1234.cloudfront.net
+Cookie: CloudFront-Policy=base64...
+  CloudFront-Signature=abc...
+  CloudFront-Key-Pair-Id=KEYID","TLS Record {
+  Version: TLS 1.3
+  Encrypted Payload: [cookie-auth request]
+}","Signed Cookie Session {
+  Scope: /premium/*
+  Expires: 2026-11-19T00:00:00Z
+  Cookies: 3 CloudFront cookies
+}","TCP Segment {
+  Source Port: 63001
+  Destination Port: 443
+  Sequence: 2001
+  Acknowledgement: 1001
+  Flags: ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 13.32.0.1
+  Protocol: TCP
+  TTL: 64
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
