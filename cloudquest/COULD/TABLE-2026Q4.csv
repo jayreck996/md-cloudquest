@@ -70,3 +70,107 @@ Cookie: CloudFront-Policy=base64...
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
+"CloudFront Default Domain (TCP 443)","Browser loading an image
+via the auto-generated
+CloudFront domain
+(no custom branding)","GET /images/logo.png HTTP/1.1
+Host: d111111abcdef8.cloudfront.net
+Accept: image/png","TLS Record {
+  Version: TLS 1.3
+  SNI: d111111abcdef8.cloudfront.net
+  Encrypted Payload: [GET request]
+}","CloudFront Session {
+  Edge: us-east-1
+  Distribution: d111111abcdef8
+  State: Active
+}","TCP Segment {
+  Source Port: 64000
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 13.32.0.1
+  Protocol: TCP
+  TTL: 64
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"CloudFront CNAME Branded Domain (TCP 443)","Browser loading a JS
+bundle via cdn.example.com
+(CNAME → d111111abcdef8
+.cloudfront.net)","GET /assets/app.js HTTP/1.1
+Host: cdn.example.com
+Accept: application/javascript","TLS Record {
+  Version: TLS 1.3
+  SNI: cdn.example.com
+  Certificate: ACM us-east-1
+  Encrypted Payload: [GET request]
+}","CloudFront Session {
+  Edge: us-east-1
+  CNAME: cdn.example.com
+  Distribution: d111111abcdef8
+}","TCP Segment {
+  Source Port: 64001
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 13.32.0.1
+  Protocol: TCP
+  TTL: 64
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"CNAME DNS Resolution (UDP 53)","Browser resolving
+cdn.example.com before
+the HTTPS request —
+walks the CNAME chain","DNS Query {
+  Type: CNAME
+  Domain: cdn.example.com
+  Response: d111111abcdef8
+    .cloudfront.net
+  A Record: 13.32.0.1
+}","No Encryption {
+  Encoding: DNS wire format
+  Passes: unchanged
+}","Stateless {
+  Session: None
+  Independent: true
+}","UDP Datagram {
+  Source Port: 54321
+  Destination Port: 53
+  Length: 35
+  Checksum: 0x2a3b
+  Data: [DNS CNAME query]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 8.8.8.8
+  Protocol: UDP
+  TTL: 64
+  Data: [UDP datagram]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
