@@ -174,3 +174,75 @@ walks the CNAME chain","DNS Query {
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
+"S3 Static Website Direct (TCP 80)","Browser accessing a
+static site directly
+from the S3 website
+endpoint — no CDN","GET /index.html HTTP/1.1
+Host: mybucket.s3-website-
+  us-east-1.amazonaws.com
+Accept: text/html","No Encryption {
+  S3 website endpoint: HTTP only
+  TLS: not supported here
+  Passes: unchanged
+}","Stateless {
+  Session: None
+  S3 is object storage
+  No session tracking
+}","TCP Segment {
+  Source Port: 65000
+  Destination Port: 80
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: ACK
+  Data: [HTTP request]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 52.218.0.1
+  Protocol: TCP
+  TTL: 64
+  Note: hits S3 regional endpoint
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
+"CloudFront + S3 Origin (TCP 443)","Browser accessing same
+static site via CloudFront
+— CDN serves from S3
+cache at nearest edge","GET /index.html HTTP/1.1
+Host: cdn.example.com
+Accept: text/html","TLS Record {
+  Version: TLS 1.3
+  SNI: cdn.example.com
+  Certificate: ACM us-east-1
+  Encrypted Payload: [GET request]
+}","CloudFront Session {
+  Edge: nearest PoP
+  Origin: mybucket.s3.amazonaws.com
+  Cache: HIT
+}","TCP Segment {
+  Source Port: 65001
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 13.32.0.1
+  Protocol: TCP
+  TTL: 64
+  Note: hits nearest edge PoP not S3
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
