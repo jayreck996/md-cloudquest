@@ -2,6 +2,46 @@ ASSET LOG
 
 ####### <!-- ANCHOR MARKER - ADD ALL NEW ASSET ENTRIES DIRECTLY BELOW THIS LINE -->
 
+## ASSET:ccna 2026-11-17 → Decimal to binary conversion: method, column values, and verification
+
+**Source:** Packt CCNA 200-301 Foundations — Course 1, Converting from Decimal to Binary lecture
+
+Computers store and process everything in binary — 1s and 0s — because electrical circuits have only two states: on and off. IP addresses that look like `203.0.113.5` to humans are four 8-bit binary numbers underneath. Binary conversion is not optional for CCNA — subnetting is built entirely on binary arithmetic.
+
+The column system is the core concept. In decimal each column represents a power of 10, multiplying by 10 as you move left: 1, 10, 100, 1000. In binary each column represents a power of 2, multiplying by 2 as you move left: 1, 2, 4, 8, 16, 32, 64, 128. For IP addressing only 8 columns matter at a time because each octet of an IPv4 address is 8 bits wide. The 8 column values are always 128, 64, 32, 16, 8, 4, 2, 1 — memorise these.
+
+The conversion method works left to right, one column at a time. For each column value ask: does this fit into what I have remaining? If yes, write 1 and subtract it from the remainder. If no, write 0 and carry the full remainder forward unchanged. When you reach the last column you must have exactly 0 remaining — anything left means an arithmetic error was made.
+
+```
+Convert 236:
+Column:   128   64   32   16    8    4    2    1
+Fits?     yes  yes  yes   no  yes  yes   no   no
+Rem:      108   44   12   12    4    0    0    0
+Bit:        1    1    1    0    1    1    0    0
+
+Result: 11101100
+
+Verify: 128 + 64 + 32 + 8 + 4 = 236 ✓
+```
+
+```
+Convert 179:
+Column:   128   64   32   16    8    4    2    1
+Fits?     yes   no  yes  yes   no   no  yes  yes
+Rem:       51   51   19    3    3    3    1    0
+Bit:        1    0    1    1    0    0    1    1
+
+Result: 10110011
+
+Verify: 128 + 32 + 16 + 2 + 1 = 179 ✓
+```
+
+Verification step: after completing all 8 columns, add up every column where the bit is 1. The total must equal the original decimal number. If it does not, go back and find the mistake.
+
+Why this matters for IP addressing: a subnet mask like `255.255.255.0` is `11111111.11111111.11111111.00000000` in binary. The 1 bits mark the network portion, the 0 bits mark the host portion. Reading and calculating subnet masks requires moving between decimal and binary quickly. The next lectures on IPv4 addresses and the subnet mask build directly on this skill.
+
+---
+
 ## ASSET:ccna 2026-11-16 → Layer 4 Transport layer: TCP, UDP, ports, flow control, and session multiplexing
 
 **Source:** Packt CCNA 200-301 Foundations — Course 1, Layer 4 Transport layer lecture
