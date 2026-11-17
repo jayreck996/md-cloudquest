@@ -2,289 +2,345 @@
 "CloudFront Signed URL (TCP 443)","Browser or mobile app
 requesting a protected
 asset via a time-limited
-signed URL","GET /premium/video.mp4
+signed URL","[Auth params in query string]
+GET /premium/video.mp4
 ?X-Amz-Signature=abc123...
 &X-Amz-Credential=KEYID/20261118
 &X-Amz-Expires=86400
-Host: d1234.cloudfront.net","TLS Record {
+Host: d1234.cloudfront.net","[TLS wraps full HTTP request]
+TLS Record {
   Version: TLS 1.3
   Encrypted Payload: [signed URL request]
-}","CloudFront Session {
+}","[Auth embedded in URL not cookie]
+CloudFront Session {
   Edge: us-east-1
   State: Active
   Auth: embedded in URL
-}","TCP Segment {
+}","[TCP carries encrypted payload]
+TCP Segment {
   Source Port: 63000
   Destination Port: 443
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Routes to nearest CloudFront edge]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 13.32.0.1
   Protocol: TCP
   TTL: 64
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "CloudFront Signed Cookie (TCP 443)","Browser streaming
 a premium series
 after login — cookies
-cover entire /premium/*","GET /premium/episode2.mp4
+cover entire /premium/*","[Auth in Cookie header, clean URL]
+GET /premium/episode2.mp4
 HTTP/1.1
 Host: d1234.cloudfront.net
 Cookie: CloudFront-Policy=base64...
   CloudFront-Signature=abc...
-  CloudFront-Key-Pair-Id=KEYID","TLS Record {
+  CloudFront-Key-Pair-Id=KEYID","[TLS encrypts cookies too]
+TLS Record {
   Version: TLS 1.3
   Encrypted Payload: [cookie-auth request]
-}","Signed Cookie Session {
+}","[Cookies scope access to path]
+Signed Cookie Session {
   Scope: /premium/*
   Expires: 2026-11-19T00:00:00Z
   Cookies: 3 CloudFront cookies
-}","TCP Segment {
+}","[TCP to port 443]
+TCP Segment {
   Source Port: 63001
   Destination Port: 443
   Sequence: 2001
   Acknowledgement: 1001
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Same edge IP as signed URL row]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 13.32.0.1
   Protocol: TCP
   TTL: 64
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "CloudFront Default Domain (TCP 443)","Browser loading an image
 via the auto-generated
 CloudFront domain
-(no custom branding)","GET /images/logo.png HTTP/1.1
+(no custom branding)","[AWS-generated domain, no branding]
+GET /images/logo.png HTTP/1.1
 Host: d111111abcdef8.cloudfront.net
-Accept: image/png","TLS Record {
+Accept: image/png","[SNI carries raw CloudFront domain]
+TLS Record {
   Version: TLS 1.3
   SNI: d111111abcdef8.cloudfront.net
   Encrypted Payload: [GET request]
-}","CloudFront Session {
+}","[Edge session, no custom domain]
+CloudFront Session {
   Edge: us-east-1
   Distribution: d111111abcdef8
   State: Active
-}","TCP Segment {
+}","[TCP to port 443]
+TCP Segment {
   Source Port: 64000
   Destination Port: 443
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Routes to CloudFront edge]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 13.32.0.1
   Protocol: TCP
   TTL: 64
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "CloudFront CNAME Branded Domain (TCP 443)","Browser loading a JS
 bundle via cdn.example.com
 (CNAME → d111111abcdef8
-.cloudfront.net)","GET /assets/app.js HTTP/1.1
+.cloudfront.net)","[Custom domain hides CloudFront]
+GET /assets/app.js HTTP/1.1
 Host: cdn.example.com
-Accept: application/javascript","TLS Record {
+Accept: application/javascript","[SNI carries branded domain + ACM cert]
+TLS Record {
   Version: TLS 1.3
   SNI: cdn.example.com
   Certificate: ACM us-east-1
   Encrypted Payload: [GET request]
-}","CloudFront Session {
+}","[CNAME resolves to distribution]
+CloudFront Session {
   Edge: us-east-1
   CNAME: cdn.example.com
   Distribution: d111111abcdef8
-}","TCP Segment {
+}","[TCP to port 443]
+TCP Segment {
   Source Port: 64001
   Destination Port: 443
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Same edge IP, different hostname]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 13.32.0.1
   Protocol: TCP
   TTL: 64
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "CNAME DNS Resolution (UDP 53)","Browser resolving
 cdn.example.com before
 the HTTPS request —
-walks the CNAME chain","DNS Query {
+walks the CNAME chain","[Resolves custom domain via CNAME chain]
+DNS Query {
   Type: CNAME
   Domain: cdn.example.com
   Response: d111111abcdef8
     .cloudfront.net
   A Record: 13.32.0.1
-}","No Encryption {
+}","[DNS unencrypted, wire format]
+No Encryption {
   Encoding: DNS wire format
   Passes: unchanged
-}","Stateless {
+}","[Stateless, one-shot lookup]
+Stateless {
   Session: None
   Independent: true
-}","UDP Datagram {
+}","[UDP to port 53]
+UDP Datagram {
   Source Port: 54321
   Destination Port: 53
   Length: 35
   Checksum: 0x2a3b
   Data: [DNS CNAME query]
-}","IP Packet {
+}","[Routes to DNS resolver]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 8.8.8.8
   Protocol: UDP
   TTL: 64
   Data: [UDP datagram]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "S3 Static Website Direct (TCP 80)","Browser accessing a
 static site directly
 from the S3 website
-endpoint — no CDN","GET /index.html HTTP/1.1
+endpoint — no CDN","[Pre-built file, no server logic]
+GET /index.html HTTP/1.1
 Host: mybucket.s3-website-
   us-east-1.amazonaws.com
-Accept: text/html","No Encryption {
+Accept: text/html","[No TLS — S3 website endpoint is HTTP only]
+No Encryption {
   S3 website endpoint: HTTP only
   TLS: not supported here
   Passes: unchanged
-}","Stateless {
+}","[S3 has no session concept]
+Stateless {
   Session: None
   S3 is object storage
   No session tracking
-}","TCP Segment {
+}","[TCP port 80, unencrypted]
+TCP Segment {
   Source Port: 65000
   Destination Port: 80
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [HTTP request]
-}","IP Packet {
+}","[Hits S3 regional endpoint, not edge]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 52.218.0.1
   Protocol: TCP
   TTL: 64
   Note: hits S3 regional endpoint
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "CloudFront + S3 Origin (TCP 443)","Browser accessing same
 static site via CloudFront
 — CDN serves from S3
-cache at nearest edge","GET /index.html HTTP/1.1
+cache at nearest edge","[Same file, served from edge cache]
+GET /index.html HTTP/1.1
 Host: cdn.example.com
-Accept: text/html","TLS Record {
+Accept: text/html","[TLS added by CloudFront + ACM]
+TLS Record {
   Version: TLS 1.3
   SNI: cdn.example.com
   Certificate: ACM us-east-1
   Encrypted Payload: [GET request]
-}","CloudFront Session {
+}","[Cache HIT — S3 not contacted]
+CloudFront Session {
   Edge: nearest PoP
   Origin: mybucket.s3.amazonaws.com
   Cache: HIT
-}","TCP Segment {
+}","[TCP port 443]
+TCP Segment {
   Source Port: 65001
   Destination Port: 443
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Hits nearest edge PoP, not S3 region]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 13.32.0.1
   Protocol: TCP
   TTL: 64
   Note: hits nearest edge PoP not S3
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
 "EC2 Dynamic App Request (TCP 443)","Browser visiting a
 dynamic web app on EC2
 — server processes the
-request before responding","GET /dashboard HTTP/1.1
+request before responding","[Server processes request, queries DB]
+GET /dashboard HTTP/1.1
 Host: app.example.com
 Cookie: session=xyz
 Accept: text/html
 Note: EC2 runs server-side
 logic — queries DB and
-builds response dynamically","TLS Record {
+builds response dynamically","[TLS via ACM cert on ALB]
+TLS Record {
   Version: TLS 1.3
   SNI: app.example.com
   Certificate: ACM on ALB
   Encrypted Payload: [GET request]
-}","ALB Sticky Session {
+}","[ALB pins session to EC2 instance]
+ALB Sticky Session {
   Target: EC2 i-0abc1234
   Session: server-side
   State: authenticated
   Contrast: no CDN cache —
   every request hits EC2
-}","TCP Segment {
+}","[TCP port 443 to ALB]
+TCP Segment {
   Source Port: 65100
   Destination Port: 443
   Sequence: 1001
   Acknowledgement: 501
   Flags: ACK
   Data: [TLS record]
-}","IP Packet {
+}","[Hits ALB not CDN edge]
+IP Packet {
   Source IP: 203.0.113.5
   Destination IP: 54.80.0.1
   Protocol: TCP
   TTL: 64
   Note: hits ALB not CDN edge
   Data: [TCP segment]
-}","Ethernet Frame {
+}","[Ethernet local delivery]
+Ethernet Frame {
   Source MAC: aa:bb:cc:dd:ee:01
   Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
   Data: [IP packet]
   FCS: [checksum]
-}","01000001 10110010
+}","[Raw bits over physical medium]
+01000001 10110010
 11001010 00110101"
