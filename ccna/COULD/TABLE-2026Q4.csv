@@ -2,25 +2,30 @@
 "HTTPS GET (TCP 443)","GET /home HTTP/1.1
 Host: myapp.com
 Cookie: session-id=abc123","TLS Record {
+  Content-Type: Application Data
   Version: TLS 1.3
-  Payload: [x9f3a...c72b]
+  Encrypted Payload: [x9f3a...c72b]
 }","Sticky Session {
   Cookie: elb-sticky=abc
   Tracked: true
 }","TCP Segment {
-  Src: 54321
-  Dst: 443
-  Seq: 1001
+  Source Port: 54321
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 5001
   Flags: ACK
+  Data: [TLS record]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.25
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.25
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:02
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -35,19 +40,22 @@ Cookie: session-id=abc123","TLS Record {
   Session: None
   Independent: true
 }","UDP Datagram {
-  Src: 54123
-  Dst: 53
+  Source Port: 54123
+  Destination Port: 53
   Length: 29
   Checksum: 0x4f2a
+  Data: [DNS query]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 8.8.8.8
-  Proto: UDP
+  Source IP: 203.0.113.5
+  Destination IP: 8.8.8.8
+  Protocol: UDP
   TTL: 64
+  Data: [UDP datagram]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:02
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -62,19 +70,23 @@ Cookie: session-id=abc123","TLS Record {
   Auth: Key exchange
   State: Established
 }","TCP Segment {
-  Src: 51234
-  Dst: 22
-  Seq: 3042
+  Source Port: 51234
+  Destination Port: 22
+  Sequence: 3042
+  Acknowledgement: 2001
   Flags: PSH ACK
+  Data: [SSH record]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.25
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.25
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:02
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -90,19 +102,23 @@ Cookie: session-id=abc123","TLS Record {
   Data: Port 20
   State: Active
 }","TCP Segment {
-  Src: 50123
-  Dst: 21
-  Seq: 2001
+  Source Port: 50123
+  Destination Port: 21
+  Sequence: 2001
+  Acknowledgement: 1001
   Flags: ACK
+  Data: [FTP command]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.30
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.30
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:03
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:03
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -118,19 +134,23 @@ Cookie: session-id=abc123","TLS Record {
   State: DATA
   Dialog: Active
 }","TCP Segment {
-  Src: 55123
-  Dst: 25
-  Seq: 4001
+  Source Port: 55123
+  Destination Port: 25
+  Sequence: 4001
+  Acknowledgement: 3001
   Flags: PSH ACK
+  Data: [SMTP message]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.40
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.40
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:04
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:04
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -144,19 +164,23 @@ Body: {name: Jay, role: admin}","No Encryption {
   Cookie: session=xyz
   State: Active
 }","TCP Segment {
-  Src: 56789
-  Dst: 80
-  Seq: 5001
+  Source Port: 56789
+  Destination Port: 80
+  Sequence: 5001
+  Acknowledgement: 4001
   Flags: PSH ACK
+  Data: [HTTP request]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.25
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.25
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:02
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -171,19 +195,22 @@ Body: {name: Jay, role: admin}","No Encryption {
   Session: None
   Independent: true
 }","UDP Datagram {
-  Src: 54999
-  Dst: 161
+  Source Port: 54999
+  Destination Port: 161
   Length: 45
   Checksum: 0x8a3f
+  Data: [SNMP request]
 }","IP Packet {
-  Src: 10.0.0.1
-  Dst: 10.0.1.1
-  Proto: UDP
+  Source IP: 10.0.0.1
+  Destination IP: 10.0.1.1
+  Protocol: UDP
   TTL: 64
+  Data: [UDP datagram]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:05
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:05
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -198,19 +225,22 @@ Body: {name: Jay, role: admin}","No Encryption {
   Session: None
   Block: 1
 }","UDP Datagram {
-  Src: 55555
-  Dst: 69
+  Source Port: 55555
+  Destination Port: 69
   Length: 20
   Checksum: 0x2b4c
+  Data: [TFTP request]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 10.0.1.50
-  Proto: UDP
+  Source IP: 203.0.113.5
+  Destination IP: 10.0.1.50
+  Protocol: UDP
   TTL: 64
+  Data: [UDP datagram]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:06
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:06
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -226,19 +256,22 @@ Body: {name: Jay, role: admin}","No Encryption {
   State: INVITE
   Dialog: Establishing
 }","UDP Datagram {
-  Src: 5060
-  Dst: 5060
+  Source Port: 5060
+  Destination Port: 5060
   Length: 480
   Checksum: 0x9f1a
+  Data: [SIP INVITE]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 203.0.113.10
-  Proto: UDP
+  Source IP: 203.0.113.5
+  Destination IP: 203.0.113.10
+  Protocol: UDP
   TTL: 64
+  Data: [UDP datagram]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:07
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:07
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
@@ -253,19 +286,23 @@ Body: {name: Jay, role: admin}","No Encryption {
   Streams: multiplexed
   State: Streaming
 }","TCP Segment {
-  Src: 58000
-  Dst: 443
-  Seq: 90001
+  Source Port: 58000
+  Destination Port: 443
+  Sequence: 90001
+  Acknowledgement: 80001
   Flags: ACK
+  Data: [TLS record]
 }","IP Packet {
-  Src: 203.0.113.5
-  Dst: 54.230.0.1
-  Proto: TCP
+  Source IP: 203.0.113.5
+  Destination IP: 54.230.0.1
+  Protocol: TCP
   TTL: 64
+  Data: [TCP segment]
 }","Ethernet Frame {
-  Src: aa:bb:cc:dd:ee:01
-  Dst: aa:bb:cc:dd:ee:08
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:08
   EtherType: IPv4
+  Data: [IP packet]
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
