@@ -288,3 +288,44 @@ builds response dynamically","TLS Record {
   FCS: [checksum]
 }","01000001 10110010
 11001010 00110101"
+"SSM Session Manager (TCP 443)","AWS CLI or Console
+running an interactive
+shell on EC2 —
+no inbound port 22 needed","aws ssm start-session {
+  Target: i-0abc1234
+  Document: SSM-SessionManagerRunShell
+  Shell: /bin/bash
+  Note: travels via SSM
+  control plane, not SSH
+}","TLS Record {
+  Version: TLS 1.3
+  SNI: ssm.us-east-1
+    .amazonaws.com
+  Encrypted Payload: [SSM session data]
+}","SSM WebSocket Session {
+  Session ID: abc-0abc1234
+  Target: i-0abc1234
+  State: Connected
+  Channel: WebSocket over HTTPS
+}","TCP Segment {
+  Source Port: 62500
+  Destination Port: 443
+  Sequence: 1001
+  Acknowledgement: 501
+  Flags: PSH ACK
+  Data: [TLS record]
+}","IP Packet {
+  Source IP: 203.0.113.5
+  Destination IP: 52.46.0.1
+  Protocol: TCP
+  ToS: 0x00
+  TTL: 64
+  Data: [TCP segment]
+}","Ethernet Frame {
+  Source MAC: aa:bb:cc:dd:ee:01
+  Destination MAC: aa:bb:cc:dd:ee:02
+  EtherType: IPv4
+  Data: [IP packet]
+  FCS: [checksum]
+}","01000001 10110010
+11001010 00110101"
